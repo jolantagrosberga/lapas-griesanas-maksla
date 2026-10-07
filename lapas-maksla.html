@@ -7,91 +7,69 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #1a2e1a;
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    color: #e8f0d8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 16px 40px;
-  }
-  .header { text-align:center; margin-bottom:16px; }
-  .eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c8a84b; margin-bottom:5px; }
-  h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(20px,4vw,34px); font-weight:300; font-style:italic; color:#e8f0d8; }
+  html, body { width:100%; height:100%; overflow:hidden; }
+  body { background:#122012; font-family:'Inter', sans-serif; color:#e8f0d8; }
 
-  .toolbar {
-    display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center;
-    background:rgba(255,255,255,0.06); border:1px solid rgba(200,168,75,0.2);
-    border-radius:14px; padding:10px 16px; margin-bottom:14px;
-    width:100%; max-width:920px;
-  }
-  .sep { width:1px; height:32px; background:rgba(255,255,255,0.12); margin:0 6px; }
-  .tool-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(232,240,216,0.4); white-space:nowrap; }
+  /* ── 16:9 APP (1600×900, mērogojas uz ekrāna izmēru) ── */
+  #app { position:absolute; top:0; left:0; width:1600px; height:900px; transform-origin:0 0; background:#1a2e1a;
+    display:grid; grid-template-columns:380px 1fr; grid-template-rows:78px 1fr; gap:14px 24px; padding:18px 24px 22px; overflow:hidden; }
 
-  .leaf-selector { display:flex; gap:6px; }
-  .leaf-opt {
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    cursor:pointer; padding:5px 8px; border-radius:8px;
-    border:1px solid transparent; transition:all 0.2s; background:transparent;
-  }
+  .header { grid-column:1/-1; display:flex; flex-direction:column; justify-content:center; }
+  .eyebrow { font-size:12px; letter-spacing:3px; text-transform:uppercase; color:#c8a84b; margin-bottom:4px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-size:40px; font-weight:300; font-style:italic; color:#e8f0d8; line-height:1.05; }
+
+  /* KREISAIS PANELIS */
+  .toolbar { display:flex; flex-direction:column; gap:16px; background:rgba(255,255,255,0.05); border:1px solid rgba(200,168,75,0.2);
+    border-radius:16px; padding:18px 20px; min-height:0; }
+  .tsec { display:flex; flex-direction:column; gap:9px; }
+  .tool-label { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:rgba(232,240,216,0.45); white-space:nowrap; }
+  .row { display:flex; gap:8px; align-items:center; }
+
+  .leaf-selector { display:flex; gap:8px; }
+  .leaf-opt { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; padding:10px 6px; border-radius:10px;
+    border:1.5px solid rgba(255,255,255,0.1); transition:all 0.2s; background:transparent; font-family:'Inter',sans-serif; }
   .leaf-opt:hover { background:rgba(255,255,255,0.06); }
-  .leaf-opt.active { border-color:#c8a84b; background:rgba(200,168,75,0.1); }
-  .leaf-opt img { width:36px; height:36px; object-fit:contain; border-radius:4px; }
-  .leaf-opt span { font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(232,240,216,0.5); }
+  .leaf-opt.active { border-color:#c8a84b; background:rgba(200,168,75,0.12); }
+  .leaf-opt img { width:72px; height:72px; object-fit:contain; border-radius:6px; }
+  .leaf-opt span { font-size:13px; letter-spacing:1px; text-transform:uppercase; color:rgba(232,240,216,0.6); }
   .leaf-opt.active span { color:#c8a84b; }
 
-  .tool-btn {
-    display:flex; flex-direction:column; align-items:center; gap:2px;
-    padding:7px 14px; border-radius:8px; border:1px solid transparent;
-    cursor:pointer; background:transparent; color:rgba(232,240,216,0.65);
-    font-family:'Inter',sans-serif; font-size:9px; letter-spacing:1px;
-    text-transform:uppercase; transition:all 0.2s;
-  }
-  .tool-btn .icon { font-size:17px; line-height:1; }
+  .tool-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 10px; border-radius:10px;
+    border:1.5px solid rgba(255,255,255,0.1); cursor:pointer; background:transparent; color:rgba(232,240,216,0.7);
+    font-family:'Inter',sans-serif; font-size:14px; letter-spacing:1px; text-transform:uppercase; transition:all 0.2s; }
+  .tool-btn .icon { font-size:22px; line-height:1; }
   .tool-btn:hover { background:rgba(255,255,255,0.06); color:#e8f0d8; }
-  .tool-btn.active { border-color:#c8a84b; background:rgba(200,168,75,0.12); color:#c8a84b; }
+  .tool-btn.active { border-color:#c8a84b; background:rgba(200,168,75,0.14); color:#c8a84b; }
 
-  .slider-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .slider-wrap input[type=range] {
-    -webkit-appearance:none; width:100px; height:3px;
-    background:rgba(255,255,255,0.15); border-radius:2px; outline:none; cursor:pointer;
-  }
-  .slider-wrap input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance:none; width:13px; height:13px;
-    border-radius:50%; background:#c8a84b; cursor:pointer;
-  }
-  .size-preview { display:flex; align-items:center; justify-content:center; width:36px; height:18px; }
+  .slider-wrap { display:flex; align-items:center; gap:14px; }
+  .slider-wrap input[type=range] { -webkit-appearance:none; flex:1; height:5px; background:rgba(255,255,255,0.18); border-radius:3px; outline:none; cursor:pointer; }
+  .slider-wrap input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#c8a84b; cursor:pointer; }
+  .slider-wrap input[type=range]::-moz-range-thumb { width:22px; height:22px; border:none; border-radius:50%; background:#c8a84b; cursor:pointer; }
+  .size-preview { display:flex; align-items:center; justify-content:center; width:40px; height:40px; }
   .size-dot { background:#e8f0d8; border-radius:50%; transition:width 0.1s,height 0.1s; }
 
-  .btn-clear {
-    padding:7px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.14);
-    background:transparent; color:rgba(232,240,216,0.6);
-    font-family:'Inter',sans-serif; font-size:11px; cursor:pointer; transition:all 0.2s;
-  }
+  .btn-clear { width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.16); background:transparent;
+    color:rgba(232,240,216,0.75); font-family:'Inter',sans-serif; font-size:15px; cursor:pointer; transition:all 0.2s; }
   .btn-clear:hover { background:rgba(255,255,255,0.07); color:#e8f0d8; }
 
-  .stage { position:relative; width:100%; max-width:920px; display:flex; justify-content:center; }
-  #leafCanvas { display:block; border-radius:12px; cursor:crosshair; }
-
-  #loadingMsg {
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    color:rgba(232,240,216,0.5); font-size:13px; letter-spacing:1px;
-  }
-
-  .hint-bar { width:100%; max-width:920px; margin-top:14px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
-  .hint {
-    display:flex; align-items:flex-start; gap:8px;
-    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
-    border-radius:10px; padding:10px 14px; max-width:270px;
-  }
-  .hint-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
-  .hint-text { font-size:12px; line-height:1.55; color:rgba(232,240,216,0.65); }
+  .hint-bar { display:flex; flex-direction:column; gap:9px; }
+  .hint { display:flex; align-items:flex-start; gap:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:10px 12px; }
+  .hint-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .hint-text { font-size:13.5px; line-height:1.5; color:rgba(232,240,216,0.7); }
   .hint-text strong { color:#c8a84b; font-weight:500; }
+
+  .btn-fs { margin-top:auto; width:100%; padding:13px 14px; border-radius:10px; border:1.5px solid #c8a84b; background:#c8a84b; color:#1a2e1a;
+    font-family:'Inter',sans-serif; font-size:15px; font-weight:600; letter-spacing:.5px; cursor:pointer; transition:all .2s; }
+  .btn-fs:hover { background:#d8b85b; }
+
+  /* LAUKUMS */
+  .stage { position:relative; min-width:0; min-height:0; display:flex; align-items:center; justify-content:center; }
+  #leafCanvas { display:block; border-radius:12px; cursor:crosshair; }
+  #loadingMsg { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:rgba(232,240,216,0.5); font-size:16px; letter-spacing:1px; }
 </style>
 </head>
 <body>
+<div id="app">
 
 <div class="header">
   <div class="eyebrow">5.5. Dabas formas un materiāli</div>
@@ -99,48 +77,57 @@
 </div>
 
 <div class="toolbar">
-  <span class="tool-label">Lapa</span>
-  <div class="leaf-selector" id="leafSelector"></div>
-
-  <div class="sep"></div>
-  <span class="tool-label">Rīks</span>
-  <button class="tool-btn active" id="btn-cut" onclick="selectTool('cut')">
-    <span class="icon">✂️</span><span>Griezt</span>
-  </button>
-  <button class="tool-btn" id="btn-eraser" onclick="selectTool('eraser')">
-    <span class="icon">⬜</span><span>Dzēst</span>
-  </button>
-
-  <div class="sep"></div>
-  <span class="tool-label">Biezums</span>
-  <div class="slider-wrap">
-    <input type="range" id="sizeSlider" min="2" max="36" value="8" oninput="updateSize(this.value)">
-    <div class="size-preview"><div class="size-dot" id="sizeDot" style="width:8px;height:8px"></div></div>
+  <div class="tsec">
+    <span class="tool-label">Lapa</span>
+    <div class="leaf-selector" id="leafSelector"></div>
   </div>
 
-  <div class="sep"></div>
+  <div class="tsec">
+    <span class="tool-label">Rīks</span>
+    <div class="row">
+      <button class="tool-btn active" id="btn-cut" onclick="selectTool('cut')">
+        <span class="icon">✂️</span><span>Griezt</span>
+      </button>
+      <button class="tool-btn" id="btn-eraser" onclick="selectTool('eraser')">
+        <span class="icon">⬜</span><span>Dzēst</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="tsec">
+    <span class="tool-label">Biezums</span>
+    <div class="slider-wrap">
+      <input type="range" id="sizeSlider" min="2" max="36" value="8" oninput="updateSize(this.value)">
+      <div class="size-preview"><div class="size-dot" id="sizeDot" style="width:8px;height:8px"></div></div>
+    </div>
+  </div>
+
   <button class="btn-clear" onclick="clearDrawing()">↺ Sākums</button>
+
+  <div class="hint-bar">
+    <div class="hint">
+      <span class="hint-icon">✂️</span>
+      <div class="hint-text"><strong>Griezt:</strong> Zīmē uz lapas — veidojas caurums, caur ko spīd tumšais fons. Tāpat kā Durans griež īstas lapas!</div>
+    </div>
+    <div class="hint">
+      <span class="hint-icon">💡</span>
+      <div class="hint-text"><strong>Padoms:</strong> Izmanto dzīslojumu kā ceļvedi — ornamentus veido starp dzīslām, lai lapa paliek vesela.</div>
+    </div>
+    <div class="hint">
+      <span class="hint-icon">🍃</span>
+      <div class="hint-text"><strong>Lapas:</strong> Liepa — plata ar smalku dzīslojumu. Kļava — 5 daivas. Ozols — viļņains ar lobiem.</div>
+    </div>
+  </div>
+
+  <button class="btn-fs" id="fs-btn" onclick="toggleFullscreen()">⛶ Atvērt pilnekrānu</button>
 </div>
 
-<div class="stage">
+<div class="stage" id="stage">
   <canvas id="leafCanvas"></canvas>
   <div id="loadingMsg">Ielādē...</div>
 </div>
 
-<div class="hint-bar">
-  <div class="hint">
-    <span class="hint-icon">✂️</span>
-    <div class="hint-text"><strong>Griezt:</strong> Zīmē uz lapas — veidojas caurums, caur ko spīd tumšais fons. Tāpat kā Durans griež īstas lapas!</div>
-  </div>
-  <div class="hint">
-    <span class="hint-icon">💡</span>
-    <div class="hint-text"><strong>Padoms:</strong> Izmanto dzīslojumu kā ceļvedi — ornamentus veido starp dzīslām, lai lapa paliek vesela.</div>
-  </div>
-  <div class="hint">
-    <span class="hint-icon">🍃</span>
-    <div class="hint-text"><strong>Lapas:</strong> Liepa — plata ar smalku dzīslojumu. Kļava — 5 daivas. Ozols — viļņains ar lobiem.</div>
-  </div>
-</div>
+</div><!-- /app -->
 
 <script>
 const LEAF_IMAGES = {
@@ -335,8 +322,9 @@ function resizeCanvas() {
   const img = loadedImgs[currentLeaf];
   if (!img) return;
   const iw = img.naturalWidth, ih = img.naturalHeight;
-  const maxW = Math.min(900, window.innerWidth - 32);
-  const maxH = window.innerHeight * 0.68;
+  // Laukums nemainās — #app vienmēr 1600×900, tāpēc izgriezumi saglabājas arī pilnekrānā
+  const stage = document.getElementById('stage');
+  const maxW = stage.clientWidth, maxH = stage.clientHeight;
   let W = maxW, H = maxW * ih / iw;
   if (H > maxH) { H = maxH; W = maxH * iw / ih; }
   canvas.width  = Math.round(W);
@@ -436,11 +424,38 @@ preloadImages().then(() => {
   render();
 });
 
-window.addEventListener('resize', () => {
-  resizeCanvas();
-  buildLeafLayer();
-  render();
-});
+// ── 16:9 mērogošana (lapa un izgriezumi netiek pārzīmēti) ──
+let APP_SCALE = 1;
+function fitApp(){
+  const app=document.getElementById('app');
+  const Ww=window.innerWidth, Hh=window.innerHeight;
+  APP_SCALE=Math.min(Ww/1600, Hh/900);
+  app.style.transform=`scale(${APP_SCALE})`;
+  app.style.left=Math.max(0,(Ww-1600*APP_SCALE)/2)+'px';
+  app.style.top =Math.max(0,(Hh-900*APP_SCALE)/2)+'px';
+}
+window.addEventListener('resize', fitApp);
+fitApp();
+
+// ── pilnekrāns ──
+function isFullscreen(){ return !!(document.fullscreenElement||document.webkitFullscreenElement); }
+function toggleFullscreen(){
+  const el=document.documentElement;
+  if(isFullscreen()){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); return; }
+  const canFs=document.fullscreenEnabled||document.webkitFullscreenEnabled;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen;
+  if(canFs&&req){ const p=req.call(el); if(p&&p.catch) p.catch(fsFallback); }
+  else fsFallback();
+}
+function fsFallback(){
+  if(confirm('Pilnekrāna režīms šajā lapā nav atļauts.\nAtvērt rīku jaunā cilnē? (Izgrieztais netiks pārnests.)')) window.open(location.href,'_blank');
+}
+function updateFsBtn(){
+  document.getElementById('fs-btn').textContent=isFullscreen()?'✕ Iziet no pilnekrāna':'⛶ Atvērt pilnekrānu';
+  setTimeout(fitApp,60);
+}
+document.addEventListener('fullscreenchange', updateFsBtn);
+document.addEventListener('webkitfullscreenchange', updateFsBtn);
 </script>
 </body>
 </html>
